@@ -34,15 +34,15 @@
           - "Modelo: {{ ansible_processor[1] if ansible_processor|length > 1 else ansible_processor[0] }}"
           - "Arquitectura: {{ ansible_architecture }}"
 
-    - name: Obtener carga del sistema (Linux)
-      shell: uptime
-      register: uptime_output
+    - name: Obtener información de procesos con top (Linux)
+      shell: top -bn1 | head -20
+      register: top_output
       when: ansible_system == "Linux"
       changed_when: false
 
-    - name: Mostrar carga del sistema (Linux)
+    - name: Mostrar información de top (Linux)
       debug:
-        msg: "{{ uptime_output.stdout }}"
+        msg: "{{ top_output.stdout_lines }}"
       when: ansible_system == "Linux"
 
     - name: Resumen del sistema

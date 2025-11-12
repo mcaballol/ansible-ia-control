@@ -24,6 +24,26 @@ pip install -r requirements.txt
 python3 configure_aap.py
 ```
 
+## Limpieza de Recursos
+
+Para eliminar todos los recursos creados en AAP:
+
+**Opción 1: Script Bash**
+```bash
+./cleanup_aap.sh
+```
+
+**Opción 2: Script Python**
+```bash
+python3 cleanup_aap.py
+```
+
+Los scripts eliminarán (en orden):
+- Job Template: `demo-ia-get-status`
+- Host: `localhost`
+- Inventory: `demo-ia-inventory`
+- Proyecto: `demo-ia-proyecto`
+
 ## Recursos creados
 
 El script crea los siguientes recursos en AAP:
@@ -47,7 +67,7 @@ Playbook que muestra información del sistema:
 - Nombre de la máquina (hostname)
 - Información de memoria (total, disponible, usada, porcentaje)
 - Información de CPU (procesadores, modelo, arquitectura)
-- Carga del sistema (uptime)
+- Información de procesos (top - primeras 20 líneas)
 - Resumen completo del sistema
 
 ## Notas
