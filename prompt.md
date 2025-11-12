@@ -111,4 +111,5 @@ Recuerda utilizar el prefijo que estamos usando para este proyecto.
 - Los scripts deben actualizar proyectos existentes si ya están creados
 - El proyecto debe sincronizarse desde Git antes de crear job templates que usen sus playbooks
 - Los playbooks se obtienen del proyecto sincronizado, no directamente del repositorio
+- **Importante:** El host `localhost` debe configurarse con `ansible_connection: local` en sus variables para ejecutar playbooks localmente sin SSH
 
