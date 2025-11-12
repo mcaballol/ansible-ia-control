@@ -35,7 +35,23 @@ El script crea los siguientes recursos en AAP:
 - **Inventory**: `demo-ia-inventory`
   - Host: `localhost`
 
+- **Job Template**: `demo-ia-get-status`
+  - Playbook: `get-status.yml`
+  - Descripción: Obtiene información del sistema (nombre, memoria y CPU)
+
+## Playbooks
+
+### get-status.yml
+
+Playbook que muestra información del sistema:
+- Nombre de la máquina (hostname)
+- Información de memoria (total, disponible, usada, porcentaje)
+- Información de CPU (procesadores, modelo, arquitectura)
+- Carga del sistema (uptime)
+- Resumen completo del sistema
+
 ## Notas
 
 - El archivo `vars.yml` está excluido del control de versiones (ver `.gitignore`)
 - El script es idempotente: si los recursos ya existen, los detecta y continúa
+- El playbook `get-status.yml` está disponible en el repositorio Git y se sincroniza automáticamente con el proyecto en AAP
