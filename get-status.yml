@@ -1,0 +1,62 @@
+---
+- name: Obtener información del sistema
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Mostrar nombre de la máquina
+      debug:
+        msg: "Máquina: {{ inventory_hostname }} ({{ ansible_hostname }})"
+
+    - name: Obtener información de memoria
+      setup:
+        gather_subset:
+          - hardware
+      register: memory_facts
+
+    - name: Mostrar uso de memoria
+      debug:
+        msg:
+          - "Memoria Total: {{ ansible_memtotal_mb }} MB"
+          - "Memoria Disponible: {{ ansible_memfree_mb }} MB"
+          - "Memoria Usada: {{ (ansible_memtotal_mb | int) - (ansible_memfree_mb | int) }} MB"
+          - "Porcentaje de Uso: {{ ((ansible_memtotal_mb | int - ansible_memfree_mb | int) / ansible_memtotal_mb | int * 100) | round(2) }}%"
+
+    - name: Obtener información de CPU
+      setup:
+        gather_subset:
+          - hardware
+      register: cpu_facts
+
+    - name: Mostrar información de CPU
+      debug:
+        msg:
+          - "Procesadores: {{ ansible_processor_vcpus }}"
+          - "Modelo: {{ ansible_processor[1] if ansible_processor|length > 1 else ansible_processor[0] }}"
+          - "Arquitectura: {{ ansible_architecture }}"
+
+    - name: Obtener carga del sistema (Linux)
+      shell: uptime
+      register: uptime_output
+      when: ansible_system == "Linux"
+      changed_when: false
+
+    - name: Mostrar carga del sistema (Linux)
+      debug:
+        msg: "{{ uptime_output.stdout }}"
+      when: ansible_system == "Linux"
+
+    - name: Resumen del sistema
+      debug:
+        msg:
+          - "=========================================="
+          - "RESUMEN DEL SISTEMA"
+          - "=========================================="
+          - "Hostname: {{ ansible_hostname }}"
+          - "Sistema Operativo: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "Kernel: {{ ansible_kernel }}"
+          - "Memoria Total: {{ ansible_memtotal_mb }} MB"
+          - "Memoria Disponible: {{ ansible_memfree_mb }} MB"
+          - "CPU: {{ ansible_processor_vcpus }} vCPU"
+          - "Arquitectura: {{ ansible_architecture }}"
+          - "=========================================="
+
