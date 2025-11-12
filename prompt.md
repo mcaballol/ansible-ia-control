@@ -20,6 +20,7 @@ listando acá. Primero los recursos que generes que tengan prefijo demo-ia:
 **Resultado esperado:**
 - Proyecto `demo-ia-proyecto` configurado con repositorio Git y credencial github
 - Inventory `demo-ia-inventory` con host localhost
+- Host localhost configurado con `ansible_connection: local` (para ejecución local)
 - Archivo `vars.yml` con variables de configuración (excluido del gitignore)
 
 ---
@@ -98,7 +99,7 @@ Recuerda utilizar el prefijo que estamos usando para este proyecto.
    - Repositorio: `git@github.com:mcaballol/ansible-ia-control.git`
    - Credencial: `github`
 3. **Inventory:** `demo-ia-inventory`
-   - Host: `localhost`
+   - Host: `localhost` (con `ansible_connection: local`)
 4. **Job Template:** `demo-ia-get-status`
    - Playbook: `get-status.yml`
 
