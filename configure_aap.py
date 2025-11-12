@@ -165,7 +165,8 @@ def create_host(base_url, username, password, inventory_id, host_name='localhost
     url = f"{base_url}/api/controller/v2/hosts/"
     payload = {
         "name": host_name,
-        "inventory": inventory_id
+        "inventory": inventory_id,
+        "variables": "ansible_connection: local\n"
     }
     
     response = requests.post(url, auth=(username, password), json=payload, verify=False)
@@ -186,7 +187,13 @@ def create_host(base_url, username, password, inventory_id, host_name='localhost
                 hosts_data = hosts_response.json()
                 if hosts_data['count'] > 0:
                     host_id = hosts_data['results'][0]['id']
-                    print(f"✓ Host existente encontrado (ID: {host_id})")
+                    # Actualizar el host con la conexión local
+                    update_url = f"{base_url}/api/controller/v2/hosts/{host_id}/"
+                    update_response = requests.patch(update_url, auth=(username, password), json=payload, verify=False)
+                    if update_response.status_code in [200, 201]:
+                        print(f"✓ Host existente actualizado con conexión local (ID: {host_id})")
+                    else:
+                        print(f"⚠ No se pudo actualizar el host, usando existente (ID: {host_id})")
                     return host_id
         print(f"Error al crear host: {response.status_code}")
         print(json.dumps(error_data, indent=2))

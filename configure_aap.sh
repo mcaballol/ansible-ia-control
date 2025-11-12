@@ -186,7 +186,8 @@ echo "7. Agregando host 'localhost' al inventory..."
 host_payload=$(cat <<EOF
 {
     "name": "localhost",
-    "inventory": ${inventory_id}
+    "inventory": ${inventory_id},
+    "variables": "ansible_connection: local\n"
 }
 EOF
 )
@@ -200,8 +201,17 @@ else
     existing_host=$(api_request "GET" "/api/controller/v2/inventories/${inventory_id}/hosts/?name=localhost")
     existing_id=$(echo "$existing_host" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data['results'][0]['id'] if data.get('count', 0) > 0 else '')" 2>/dev/null)
     if [ -n "$existing_id" ]; then
-        echo -e "${YELLOW}   ⚠ Host 'localhost' ya existe (ID: ${existing_id})${NC}"
-        host_id="$existing_id"
+        echo -e "${YELLOW}   ⚠ Host 'localhost' ya existe, actualizando configuración...${NC}"
+        # Actualizar el host con la conexión local
+        update_response=$(api_request "PATCH" "/api/controller/v2/hosts/${existing_id}/" "$host_payload")
+        updated_id=$(echo "$update_response" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('id', ''))" 2>/dev/null)
+        if [ -n "$updated_id" ]; then
+            echo -e "${GREEN}   ✓ Host 'localhost' actualizado (ID: ${updated_id})${NC}"
+            host_id="$updated_id"
+        else
+            echo -e "${YELLOW}   ⚠ No se pudo actualizar, usando existente (ID: ${existing_id})${NC}"
+            host_id="$existing_id"
+        fi
     else
         echo -e "${RED}   ✗ Error al crear host${NC}"
         echo "$host_response"
